@@ -1,0 +1,9 @@
+[submodule "src/main/3rd-party/googleapis"]
+	path = src/main/3rd-party/googleapis
+	url = https://github.com/gogo/googleapis.git
+[submodule "src/main/3rd-party/gogo-protobuf"]
+	path = src/main/3rd-party/gogo-protobuf
+	url = https://github.com/gogo/protobuf
+[submodule "src/main/3rd-party/jaeger"]
+	path = src/main/3rd-party/jaeger
+	url = https://github.com/jaegertracing/jaeger

@@ -1,0 +1,62 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+}
+
+plugins {
+	id 'java'
+	id 'application'
+  id "com.google.protobuf" version "0.8.8"
+}
+
+compileJava {
+	sourceCompatibility = 11
+	targetCompatibility = 11
+}
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+mainClassName = 'trace.filtering.Main'
+
+sourceSets.main.proto.srcDirs[0].mkdir()
+
+task cleanProtoFiles(type: Delete) {
+	delete sourceSets.main.proto.srcDirs[0]
+}
+
+task copyProtoFiles(type: Copy) {
+	from('src/main/3rd-party/jaeger/model/proto') {
+		include 'model.proto'
+	}
+	from('src/main/3rd-party/gogo-protobuf') {
+		include 'gogoproto/gogo.proto'
+	}
+	from('src/main/3rd-party/googleapis') {
+		include '**/annotations.proto'
+		include '**/http.proto'
+	}
+	includeEmptyDirs = false
+	into sourceSets.main.proto.srcDirs[0]
+}
+
+
+protobuf {
+	protoc {
+		artifact = 'com.google.protobuf:protoc:3.6.1'
+	}
+}
+
+afterEvaluate {
+	tasks.generateProto.dependsOn copyProtoFiles
+	tasks.clean.dependsOn cleanProtoFiles
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile 'org.apache.kafka:kafka-streams:2.1.1'
+	compile 'com.google.protobuf:protobuf-java:3.6.1'
+}
